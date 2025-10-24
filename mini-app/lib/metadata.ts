@@ -1,3 +1,6 @@
-export const title = "Mini App Factory App";
-export const description = "This app was created by the Mini App Factory!";
-export const url = process.env.NEXT_PUBLIC_URL;
+export const title = "ETHQUIZ! ⛓️";
+export const description =
+  "Ultra-hard Ethereum quiz! 10 questions on consensus, EIPs, etc. Share your score.";
+export const url =
+  process.env.NEXT_PUBLIC_URL ??
+  "https://ethquiz.miniapp-factory.marketplace.openxai.network";
