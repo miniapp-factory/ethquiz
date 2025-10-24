@@ -1,4 +1,4 @@
-import { localFont } from "next/font/local";
+import localFont from "next/font/local";
 import { MiniAppProvider } from "@/components/MiniAppProvider";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
