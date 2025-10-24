@@ -131,131 +131,65 @@ export default function Home() {
         } else {
           setCompleted(true);
         }
-      }, 2000);
+      }, 1500);
       return () => clearTimeout(timer);
     }
   }, [selected, current]);
 
-  const share = () => {
-    const text = `I scored ${score}/10 on ETHQUIZ! ⛓️ Super hard Ethereum quiz in /openxai—try beating it: https://ethquiz.miniapp-factory.marketplace.openxai.network`;
-    const shareUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}`;
-    window.open(shareUrl, "_blank");
-  };
-
-  const copyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      alert("Link copied!");
-    } catch {
-      alert("Failed to copy link.");
-    }
-  };
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      {!started && !completed && (
-        <div className="flex flex-col items-center gap-4 text-center">
-          <h1 className="text-4xl font-bold text-white drop-shadow-[0_0_10px_rgba(255,255,0,0.5)]">
-            {title}
-          </h1>
-          <p className="text-muted-foreground">{description}</p>
-          <Button
-            className="bg-red-600 text-yellow-200 hover:bg-red-700 transition-colors"
-            onClick={startQuiz}
-          >
-            Start Quiz
-          </Button>
-        </div>
-      )}
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground">
+      <div className="max-w-3xl w-full p-4">
+        <h1 className="text-3xl font-bold mb-4 text-center">{title}</h1>
+        <p className="text-center mb-8">{description}</p>
 
-      {started && !completed && (
-        <div className="flex flex-col items-center gap-4 w-full max-w-md">
-          <Progress
-            value={((current + 1) / questions.length) * 100}
-            className="w-full"
-          />
-          <Card className="w-full bg-white/80 backdrop-blur-md rounded-xl shadow-lg">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold">
-                Question {current + 1}/{questions.length}
-              </CardTitle>
-              <CardDescription className="mt-2">
-                {questions[current].question}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-2">
-              {questions[current].options.map((opt, idx) => {
-                const isSelected = selected === idx;
-                const isCorrect = questions[current].answerIndex === idx;
-                const btnClass =
-                  idx % 2 === 0
-                    ? "bg-red-600 text-yellow-200"
-                    : "bg-yellow-600 text-red-200";
-                const selectedClass = isSelected
-                  ? isCorrect
-                    ? "border-4 border-green-500"
-                    : "border-4 border-red-500"
-                  : "";
-                return (
+        {!started && (
+          <div className="flex flex-col items-center space-y-4">
+            <Button onClick={startQuiz} size="lg">
+              Start Quiz
+            </Button>
+          </div>
+        )}
+
+        {started && !completed && (
+          <div className="space-y-4">
+            <Progress value={(current + 1) / questions.length * 100} />
+            <Card>
+              <CardHeader>
+                <CardTitle>{questions[current].question}</CardTitle>
+                <CardDescription>{`Question ${current + 1} of ${questions.length}`}</CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-2">
+                {questions[current].options.map((option, idx) => (
                   <Button
                     key={idx}
-                    className={`${btnClass} ${selectedClass} hover:scale-105 transition-transform`}
+                    variant={selected === idx ? "secondary" : "outline"}
                     onClick={() => handleOptionClick(idx)}
                     disabled={selected !== null}
+                    className="w-full justify-start"
                   >
-                    {opt}
+                    {option}
                   </Button>
-                );
-              })}
-            </CardContent>
-          </Card>
-          {feedback && (
-            <div className="mt-4 text-center text-lg font-medium">{feedback}</div>
-          )}
-        </div>
-      )}
+                ))}
+              </CardContent>
+            </Card>
+            {feedback && (
+              <div className="mt-4 text-center text-lg font-medium">
+                {feedback}
+              </div>
+            )}
+          </div>
+        )}
 
-      {completed && (
-        <div className="flex flex-col items-center gap-4 w-full max-w-md">
-          <Card className="w-full bg-white/80 backdrop-blur-md rounded-xl shadow-lg">
-            <CardHeader>
-              <CardTitle className="text-2xl font-bold">
-                Quiz Complete! ⛓️
-              </CardTitle>
-              <CardDescription className="mt-2 text-xl">
-                Score: {score}/{questions.length}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col items-center gap-4">
-              <p className="text-lg">
-                {score >= 8
-                  ? "Ethereum Genius! 🌟"
-                  : score >= 5
-                  ? "Solid Effort! 💪"
-                  : "Keep Learning! 📚"}
-              </p>
-              <Button
-                className="bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-                onClick={startQuiz}
-              >
-                Play Again
-              </Button>
-              <Button
-                className="bg-purple-600 text-white hover:bg-purple-700 transition-colors"
-                onClick={share}
-              >
-                Share on Farcaster
-              </Button>
-              <Button
-                className="bg-gray-600 text-white hover:bg-gray-700 transition-colors"
-                onClick={copyLink}
-              >
-                Copy link
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+        {completed && (
+          <div className="text-center space-y-4">
+            <h2 className="text-2xl font-semibold">Quiz Complete!</h2>
+            <p className="text-xl">{`Your score: ${score} / ${questions.length}`}</p>
+            <Button onClick={startQuiz} size="lg">
+              Retake Quiz
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
